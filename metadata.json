@@ -1,0 +1,6 @@
+{
+  "name": "DANDELI - Ekosistem Transportasi & Layanan Digital",
+  "description": "Platform transportasi online, pesan makanan, dan pengiriman kurir terintegrasi untuk Pengguna, Pengemudi, dan Administrator.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
