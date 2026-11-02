@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { LocationPoint } from '@/lib/types';
-import { Bike, Navigation, Plus, Minus, Compass, MapPin, Layers, Check } from 'lucide-react';
+import { Bike, Plus, Minus, Compass, MapPin, Layers } from 'lucide-react';
 import { APIProvider, Map, AdvancedMarker, Pin, useMap } from '@vis.gl/react-google-maps';
 
 const GOOGLE_MAPS_API_KEY =
@@ -26,20 +26,83 @@ interface InteractiveMapProps {
   showRoute?: boolean;
 }
 
-// Fallback reverse-geocoding helper based on Jakarta coordinate zones
-function getApproximateJakartaAddress(lat: number, lng: number): { name: string; address: string } {
-  // Landmarks in Jakarta for nearest neighbor matching
+// Fallback reverse-geocoding helper based on Kabupaten & Kota Tegal coordinate zones
+// Berpusat di Desa Danawarih, Kecamatan Balapulang dan sekitarnya
+function getApproximateTegalAddress(lat: number, lng: number): { name: string; address: string } {
+  // Landmarks in Kab. & Kota Tegal for nearest neighbor matching
   const knownPlaces = [
-    { name: 'Bundaran HI', address: 'Jl. M.H. Thamrin No. 1, Menteng, Jakarta Pusat', lat: -6.1950, lng: 106.8230 },
-    { name: 'Monumen Nasional (Monas)', address: 'Gambir, Kecamatan Gambir, Jakarta Pusat', lat: -6.1754, lng: 106.8272 },
-    { name: 'Grand Indonesia Mall', address: 'Jl. M.H. Thamrin No. 28-30, Tanah Abang, Jakarta Pusat', lat: -6.1966, lng: 106.8208 },
-    { name: 'SCBD Sudirman', address: 'Jl. Jend. Sudirman Kav. 52-53, Senayan, Jakarta Selatan', lat: -6.2255, lng: 106.8095 },
-    { name: 'Plaza Senayan', address: 'Jl. Asia Afrika No. 8, Gelora, Tanah Abang, Jakarta Pusat', lat: -6.2250, lng: 106.7990 },
-    { name: 'Stasiun Gambir', address: 'Jl. Medan Merdeka Timur No. 1, Gambir, Jakarta Pusat', lat: -6.1767, lng: 106.8306 },
-    { name: 'Stasiun Sudirman', address: 'Jl. Kendal No. 1, Menteng, Jakarta Pusat', lat: -6.2023, lng: 106.8236 },
-    { name: 'Blok M Square', address: 'Jl. Melawai 5, Melawai, Kebayoran Baru, Jakarta Selatan', lat: -6.2443, lng: 106.7978 },
-    { name: 'Kuningan City', address: 'Jl. Prof. DR. Satrio No. 18, Karet Kuningan, Jakarta Selatan', lat: -6.2235, lng: 106.8296 },
-    { name: 'Kota Tua Jakarta', address: 'Kawasan Kota Tua, Taman Sari, Jakarta Barat', lat: -6.1376, lng: 106.8133 },
+    {
+      name: 'Kantor Pusat DANDELI Danawarih',
+      address: 'Jl. Raya Danawarih No. 1, Desa Danawarih, Balapulang, Kab. Tegal',
+      lat: -7.1005,
+      lng: 109.1412,
+    },
+    {
+      name: 'Jembatan Gantung Danawarih & Kali Gung',
+      address: 'Kawasan Wisata Religi Makam Ki Gede Sebayu, Danawarih, Kab. Tegal',
+      lat: -7.0988,
+      lng: 109.1430,
+    },
+    {
+      name: 'Pasar Balapulang',
+      address: 'Jl. Raya Balapulang, Balapulang Kulon, Kec. Balapulang, Kab. Tegal',
+      lat: -7.0682,
+      lng: 109.1195,
+    },
+    {
+      name: 'Pertigaan Yomani / Sentra Martabak Lebaksiu',
+      address: 'Jl. Raya Yomani - Guci, Lebaksiu Lor, Kec. Lebaksiu, Kab. Tegal',
+      lat: -7.0425,
+      lng: 109.1428,
+    },
+    {
+      name: 'Alun-alun Hanggawana Slawi',
+      address: 'Jl. Ahmad Yani, Procot, Kec. Slawi, Kab. Tegal',
+      lat: -6.9855,
+      lng: 109.1384,
+    },
+    {
+      name: 'Stasiun Kereta Api Slawi',
+      address: 'Jl. Letjen Suprapto, Kudaile, Kec. Slawi, Kab. Tegal',
+      lat: -6.9802,
+      lng: 109.1345,
+    },
+    {
+      name: 'Exit Tol Adiwerna & Singkil',
+      address: 'Jl. Raya Singkil, Adiwerna, Kab. Tegal',
+      lat: -6.9378,
+      lng: 109.1312,
+    },
+    {
+      name: 'Sentra Tahu Aci Banjaran Adiwerna',
+      address: 'Jl. Raya Banjaran, Adiwerna, Kab. Tegal',
+      lat: -6.9550,
+      lng: 109.1330,
+    },
+    {
+      name: 'Alun-alun Kota Tegal & Masjid Agung',
+      address: 'Jl. Pancasila No. 1, Mangkukusuman, Kota Tegal',
+      lat: -6.8672,
+      lng: 109.1388,
+    },
+    {
+      name: 'Stasiun Besar Kereta Api Tegal',
+      address: 'Jl. Semi No. 1, Slerok, Kec. Tegal Timur, Kota Tegal',
+      lat: -6.8647,
+      lng: 109.1419,
+    },
+    {
+      name: 'Pacific Mall Tegal',
+      address: 'Jl. Mayjend Sutoyo No. 35, Pekauman, Kota Tegal',
+      lat: -6.8710,
+      lng: 109.1235,
+    },
+    {
+      name: 'Pemandian Air Panas Guci Bumijawa',
+      address: 'Jl. Objek Wisata Guci, Kec. Bumijawa / Bojong, Kab. Tegal',
+      lat: -7.2140,
+      lng: 109.1670,
+    },
   ];
 
   let closest = knownPlaces[0];
@@ -53,20 +116,20 @@ function getApproximateJakartaAddress(lat: number, lng: number): { name: string;
     }
   }
 
-  // If reasonably close to a known landmark, reference it
-  if (minDistance < 0.008) {
+  // If reasonably close to a known landmark in Tegal/Danawarih, reference it
+  if (minDistance < 0.015) {
     return {
       name: closest.name,
       address: closest.address,
     };
   }
 
-  // Generative descriptive address with coordinates
+  // Generative descriptive address for Tegal region
   const latStr = lat.toFixed(4);
   const lngStr = lng.toFixed(4);
   return {
-    name: `Titik Peta (${latStr}, ${lngStr})`,
-    address: `Jl. Area Khusus Ibukota Jakarta (Koordinat: ${latStr}, ${lngStr})`,
+    name: `Titik Peta Tegal (${latStr}, ${lngStr})`,
+    address: `Kawasan Kab. & Kota Tegal (Danawarih, Balapulang, Slawi & Sekitarnya) [${latStr}, ${lngStr}]`,
   };
 }
 
@@ -91,8 +154,11 @@ function MapEventHandler({
       const lng = e.latLng.lng();
 
       // Check if geocoder is available
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       if (typeof window !== 'undefined' && (window as any).google?.maps?.Geocoder) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const geocoder = new (window as any).google.maps.Geocoder();
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         geocoder.geocode({ location: { lat, lng } }, (results: any, status: any) => {
           if (status === 'OK' && results && results[0]) {
             const place = results[0];
@@ -104,7 +170,7 @@ function MapEventHandler({
               lng,
             });
           } else {
-            const fallback = getApproximateJakartaAddress(lat, lng);
+            const fallback = getApproximateTegalAddress(lat, lng);
             onSelectLocation({
               name: `${selectionType === 'DESTINATION' ? 'Tujuan' : 'Jemput'}: ${fallback.name}`,
               address: fallback.address,
@@ -114,7 +180,7 @@ function MapEventHandler({
           }
         });
       } else {
-        const fallback = getApproximateJakartaAddress(lat, lng);
+        const fallback = getApproximateTegalAddress(lat, lng);
         onSelectLocation({
           name: `${selectionType === 'DESTINATION' ? 'Tujuan' : 'Jemput'}: ${fallback.name}`,
           address: fallback.address,
@@ -148,9 +214,8 @@ export function InteractiveMap({
   const [vectorOffset, setVectorOffset] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
-  const [tempPin, setTempPin] = useState<{ lat: number; lng: number } | null>(null);
 
-  // Compute map center
+  // Compute map center (Default: Corridor Kabupaten Tegal, Danawarih & Balapulang)
   const center = useMemo(() => {
     if (pickupLocation) {
       return { lat: pickupLocation.lat, lng: pickupLocation.lng };
@@ -161,13 +226,13 @@ export function InteractiveMap({
     if (driverLocation) {
       return { lat: driverLocation.lat, lng: driverLocation.lng };
     }
-    return { lat: -6.2088, lng: 106.8456 }; // Jakarta center
+    return { lat: -7.0450, lng: 109.1350 }; // Pusat koridor Danawarih - Balapulang - Slawi
   }, [pickupLocation, destinationLocation, driverLocation]);
 
-  // Vector map coordinate conversion
-  const baseLat = -6.20;
-  const baseLng = 106.82;
-  const scale = 2200;
+  // Vector map coordinate conversion centered around Danawarih/Balapulang/Slawi/Tegal
+  const baseLat = -7.04;
+  const baseLng = 109.135;
+  const scale = 1400;
 
   const coordToSvg = (lat: number, lng: number) => {
     const x = 300 + (lng - baseLng) * scale * vectorZoom + vectorOffset.x;
@@ -183,11 +248,11 @@ export function InteractiveMap({
 
   const pickupSvg = pickupLocation
     ? coordToSvg(pickupLocation.lat, pickupLocation.lng)
-    : { x: 260, y: 190 };
+    : { x: 290, y: 260 };
 
   const destSvg = destinationLocation
     ? coordToSvg(destinationLocation.lat, destinationLocation.lng)
-    : { x: 380, y: 220 };
+    : { x: 310, y: 130 };
 
   const driverSvg = driverLocation
     ? coordToSvg(driverLocation.lat, driverLocation.lng)
@@ -218,8 +283,7 @@ export function InteractiveMap({
     const clickY = ((e.clientY - rect.top) / rect.height) * 400;
 
     const coords = svgToCoord(clickX, clickY);
-    const fallback = getApproximateJakartaAddress(coords.lat, coords.lng);
-    setTempPin(coords);
+    const fallback = getApproximateTegalAddress(coords.lat, coords.lng);
     onSelectLocation({
       name: `${selectionType === 'DESTINATION' ? 'Tujuan' : 'Jemput'}: ${fallback.name}`,
       address: fallback.address,
@@ -228,15 +292,18 @@ export function InteractiveMap({
     });
   };
 
-  // Arterial road paths for Jakarta vector layout
+  // Arterial road paths representing Tegal - Slawi - Lebaksiu - Balapulang - Danawarih axis
   const streets = [
-    'M 270 20 L 290 180 L 310 380',
-    'M 270 20 L 260 -80',
-    'M 80 270 L 290 260 L 520 250',
-    'M 360 120 L 380 280 L 400 370',
-    'M 180 210 L 380 210 L 540 220',
-    'M 240 240 L 370 240 L 460 245',
-    'M 100 120 Q 280 140 480 130',
+    // Jalan Raya Tegal - Purwokerto (North to South spine)
+    'M 305 10 L 305 110 L 310 180 L 290 260 L 275 320 L 285 390',
+    // Jalan Raya Yomani - Guci (East towards Mount Slamet / Guci)
+    'M 310 180 L 410 240 L 480 320 L 520 380',
+    // Jalan Raya Balapulang - Danawarih (Connecting Balapulang to Danawarih & Kali Gung)
+    'M 275 320 L 330 335 L 360 360',
+    // Slawi West-East bypass (Jatibarang / Pangkah)
+    'M 120 115 L 305 110 L 490 120',
+    // Adiwerna Tol connector
+    'M 160 55 L 305 60 L 450 50',
   ];
 
   return (
@@ -249,7 +316,7 @@ export function InteractiveMap({
               mapId="DEMO_MAP_ID"
               defaultCenter={center}
               center={center}
-              defaultZoom={14}
+              defaultZoom={12}
               zoomControl={true}
               streetViewControl={false}
               mapTypeControl={false}
@@ -296,7 +363,7 @@ export function InteractiveMap({
               {driverLocation && (
                 <AdvancedMarker
                   position={{ lat: driverLocation.lat, lng: driverLocation.lng }}
-                  title="Posisi Driver DANDELI"
+                  title="Posisi Driver DANDELI Tegal"
                 >
                   <div className="relative flex items-center justify-center">
                     <span className="absolute w-8 h-8 rounded-full bg-emerald-500/40 animate-ping"></span>
@@ -312,7 +379,7 @@ export function InteractiveMap({
                 <AdvancedMarker
                   key={drv.id}
                   position={{ lat: drv.lat, lng: drv.lng }}
-                  title={drv.name || 'Mitra DANDELI Motor'}
+                  title={drv.name || 'Mitra DANDELI Motor Tegal'}
                 >
                   <div className="w-6 h-6 rounded-full bg-emerald-700 border border-white text-white flex items-center justify-center shadow-md hover:scale-125 transition-transform">
                     <Bike className="w-3 h-3" />
@@ -347,43 +414,45 @@ export function InteractiveMap({
               </filter>
             </defs>
 
-            {/* Parks & Green zones */}
-            <path d="M 220 50 Q 250 40 270 70 Q 280 100 230 110 Z" fill="#d4ebd7" className="dark:fill-[#1b3425] opacity-70" />
-            <path d="M 120 180 Q 160 170 170 210 Q 140 240 100 220 Z" fill="#d4ebd7" className="dark:fill-[#1b3425] opacity-60" />
-            <path d="M 390 280 Q 440 270 450 320 Q 410 350 370 330 Z" fill="#d4ebd7" className="dark:fill-[#1b3425] opacity-60" />
+            {/* Green zones / Hutan Lindung & Kawasan Danawarih / Guci */}
+            <path d="M 220 280 Q 250 260 280 290 Q 290 340 230 350 Z" fill="#d4ebd7" className="dark:fill-[#1b3425] opacity-70" />
+            <path d="M 380 280 Q 450 250 490 310 Q 460 370 390 350 Z" fill="#d4ebd7" className="dark:fill-[#1b3425] opacity-60" />
+            <path d="M 120 80 Q 180 70 190 120 Q 150 150 100 130 Z" fill="#d4ebd7" className="dark:fill-[#1b3425] opacity-50" />
 
-            {/* Ciliwung River Curve */}
-            <path d="M 340 -20 Q 320 100 350 200 T 330 420" stroke="#b8d5e5" strokeWidth="14" fill="none" strokeLinecap="round" className="dark:stroke-[#183244]" />
+            {/* Kali Gung River (Melintasi Danawarih, Balapulang, Slawi hingga Laut Jawa di Tegal) */}
+            <path d="M 360 410 Q 340 330 320 240 T 330 110 T 315 -20" stroke="#b8d5e5" strokeWidth="12" fill="none" strokeLinecap="round" className="dark:stroke-[#183244]" />
 
             {/* Secondary Road Network */}
             <g stroke="#ffffff" strokeWidth="4" strokeLinecap="round" opacity="0.9" className="dark:stroke-[#2b353b]">
-              <line x1="120" y1="40" x2="480" y2="60" />
-              <line x1="140" y1="160" x2="520" y2="170" />
-              <line x1="80" y1="320" x2="530" y2="330" />
-              <line x1="180" y1="20" x2="190" y2="380" />
-              <line x1="450" y1="10" x2="470" y2="380" />
+              <line x1="80" y1="180" x2="480" y2="190" />
+              <line x1="100" y1="260" x2="520" y2="270" />
+              <line x1="220" y1="20" x2="230" y2="380" />
+              <line x1="390" y1="10" x2="410" y2="380" />
             </g>
 
             {/* Primary Arterial Streets */}
             {streets.map((d, idx) => (
-              <path key={idx} d={d} stroke="#ffffff" strokeWidth="9" strokeLinecap="round" strokeLinejoin="round" fill="none" className="dark:stroke-[#37454d]" />
+              <path key={idx} d={d} stroke="#ffffff" strokeWidth="8" strokeLinecap="round" strokeLinejoin="round" fill="none" className="dark:stroke-[#37454d]" />
             ))}
 
             {/* Street central line */}
             {streets.map((d, idx) => (
-              <path key={`center-${idx}`} d={d} stroke="#fcd34d" strokeWidth="2.5" strokeDasharray="8 6" strokeLinecap="round" strokeLinejoin="round" fill="none" opacity="0.8" className="dark:opacity-50" />
+              <path key={`center-${idx}`} d={d} stroke="#fcd34d" strokeWidth="2" strokeDasharray="8 6" strokeLinecap="round" strokeLinejoin="round" fill="none" opacity="0.8" className="dark:opacity-50" />
             ))}
 
             {/* Landmarks text */}
-            <text x="240" y="80" fill="#64748b" fontSize="10" fontWeight="600" className="dark:fill-[#94a3b8]">MONAS</text>
-            <text x="280" y="195" fill="#64748b" fontSize="10" fontWeight="600" className="dark:fill-[#94a3b8]">GRAND INDONESIA</text>
-            <text x="315" y="275" fill="#64748b" fontSize="10" fontWeight="600" className="dark:fill-[#94a3b8]">SCBD / SUDIRMAN</text>
+            <text x="315" y="30" fill="#64748b" fontSize="10" fontWeight="bold" className="dark:fill-[#94a3b8]">KOTA TEGAL</text>
+            <text x="315" y="105" fill="#64748b" fontSize="10" fontWeight="bold" className="dark:fill-[#94a3b8]">SLAWI (Pemkab Tegal)</text>
+            <text x="320" y="175" fill="#64748b" fontSize="9" fontWeight="600" className="dark:fill-[#94a3b8]">LEBAKSIU / YOMANI</text>
+            <text x="195" y="265" fill="#64748b" fontSize="9" fontWeight="600" className="dark:fill-[#94a3b8]">BALAPULANG</text>
+            <text x="340" y="335" fill="#047857" fontSize="10" fontWeight="bold" className="dark:fill-[#10b981]">★ DANAWARIH (Pusat DANDELI)</text>
+            <text x="440" y="375" fill="#64748b" fontSize="9" fontWeight="600" className="dark:fill-[#94a3b8]">WISATA GUCI</text>
 
             {/* Simulated Route Polyline */}
             {showRoute && pickupLocation && destinationLocation && (
               <g>
                 <path
-                  d={`M ${pickupSvg.x} ${pickupSvg.y} Q ${(pickupSvg.x + destSvg.x) / 2 + 30} ${(pickupSvg.y + destSvg.y) / 2 - 20} ${destSvg.x} ${destSvg.y}`}
+                  d={`M ${pickupSvg.x} ${pickupSvg.y} Q ${(pickupSvg.x + destSvg.x) / 2 + 20} ${(pickupSvg.y + destSvg.y) / 2 - 10} ${destSvg.x} ${destSvg.y}`}
                   stroke="#047857"
                   strokeWidth="7"
                   fill="none"
@@ -391,7 +460,7 @@ export function InteractiveMap({
                   opacity="0.25"
                 />
                 <path
-                  d={`M ${pickupSvg.x} ${pickupSvg.y} Q ${(pickupSvg.x + destSvg.x) / 2 + 30} ${(pickupSvg.y + destSvg.y) / 2 - 20} ${destSvg.x} ${destSvg.y}`}
+                  d={`M ${pickupSvg.x} ${pickupSvg.y} Q ${(pickupSvg.x + destSvg.x) / 2 + 20} ${(pickupSvg.y + destSvg.y) / 2 - 10} ${destSvg.x} ${destSvg.y}`}
                   stroke="url(#routeGrad)"
                   strokeWidth="5"
                   fill="none"
@@ -501,7 +570,9 @@ export function InteractiveMap({
       <div className="absolute left-3 bottom-3 px-2.5 py-1 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md rounded-lg shadow-sm border border-slate-200/60 dark:border-slate-800 flex items-center gap-1.5 text-[11px] font-medium text-slate-700 dark:text-slate-300 z-10">
         <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
         <span>
-          {mapType === 'GOOGLE' ? 'Google Maps API Terintegrasi · Sinkronisasi Driver & Pelanggan' : 'GPS DANDELI Live · DKI Jakarta'}
+          {mapType === 'GOOGLE'
+            ? 'Google Maps API · Kab. & Kota Tegal (Pusat: Danawarih)'
+            : 'GPS DANDELI Live · Balapulang & Tegal Sekitarnya'}
         </span>
       </div>
     </div>

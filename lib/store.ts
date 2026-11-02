@@ -20,6 +20,7 @@ import {
   INITIAL_PROMOTIONS,
   INITIAL_TICKETS,
   INITIAL_USER,
+  TEGAL_LOCATIONS,
   JAKARTA_LOCATIONS,
 } from './data';
 
@@ -76,7 +77,7 @@ export interface DandeliState {
   incomingOrderTimer: number; // seconds left for driver to accept
 }
 
-export const STORAGE_KEY = 'dandeli_ecosystem_state_v2';
+export const STORAGE_KEY = 'dandeli_ecosystem_state_tegal_v1';
 
 export function loadStateFromStorage(): DandeliState | null {
   if (typeof window === 'undefined') return null;
@@ -105,8 +106,7 @@ export function loadStateFromStorage(): DandeliState | null {
 }
 
 export function getDefaultState(): DandeliState {
-
-  // Initial pre-completed order for realistic history
+  // Initial pre-completed order in Tegal
   const samplePastOrder: Order = {
     id: 'ord-hist-01',
     orderNumber: 'DND-20261101-0982',
@@ -122,19 +122,19 @@ export function getDefaultState(): DandeliState {
     driverAvatar: INITIAL_DRIVERS[0].avatar,
     driverVehiclePlate: INITIAL_DRIVERS[0].vehiclePlate,
     driverRating: INITIAL_DRIVERS[0].rating,
-    pickupLocation: JAKARTA_LOCATIONS[0],
-    destinationLocation: JAKARTA_LOCATIONS[2],
-    distanceKm: 4.8,
-    estimatedDurationMins: 16,
+    pickupLocation: TEGAL_LOCATIONS[0], // Danawarih Balapulang
+    destinationLocation: TEGAL_LOCATIONS[4], // Alun-alun Hanggawana Slawi
+    distanceKm: 13.5,
+    estimatedDurationMins: 25,
     fareBreakdown: {
-      baseFare: 10000,
-      distanceFare: 12480,
-      platformFee: 2500,
-      discount: 0,
-      subtotal: 24980,
-      totalFare: 25000,
-      driverEarnings: 21250,
-      platformCommission: 3750,
+      baseFare: 8000,
+      distanceFare: 29700,
+      platformFee: 2000,
+      discount: 10000,
+      subtotal: 39700,
+      totalFare: 29700,
+      driverEarnings: 25245,
+      platformCommission: 4455,
     },
     paymentMethod: 'DANDELI_WALLET',
     paymentStatus: 'PAID',
@@ -142,20 +142,20 @@ export function getDefaultState(): DandeliState {
       {
         id: 'msg-1',
         sender: 'DRIVER',
-        text: 'Halo kak, saya sudah di lobi barat Grand Indonesia ya.',
+        text: 'Assalamu alaikum kak Hendra, kulo mpun dugi gapura Danawarih nggih.',
         timestamp: '14:32',
       },
       {
         id: 'msg-2',
         sender: 'USER',
-        text: 'Baik pak, saya sedang turun dari eskalator lobi.',
+        text: 'Wa alaikum salam mas Budi, nggih siap kulo medal sakniki.',
         timestamp: '14:33',
       },
     ],
     ratingGiven: 5,
-    reviewText: 'Driver sangat ramah, motor bersih dan helm wangi!',
+    reviewText: 'Driver wong Balapulang ramah tenan, helm resik lan aman lewat Slawi!',
     createdAt: '2026-11-01T14:30:00Z',
-    updatedAt: '2026-11-01T14:52:00Z',
+    updatedAt: '2026-11-01T14:58:00Z',
   };
 
   return {

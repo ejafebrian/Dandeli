@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useDandeli } from '@/lib/DandeliContext';
 import { LocationPoint, PackageDetails, PaymentMethod } from '@/lib/types';
-import { JAKARTA_LOCATIONS } from '@/lib/data';
+import { TEGAL_LOCATIONS } from '@/lib/data';
 import { calculateDistanceKm, formatRupiah } from '@/lib/store';
 import { Package, FileText, Box, ShieldCheck, X, ChevronRight, Lock } from 'lucide-react';
 import confetti from 'canvas-confetti';
@@ -16,14 +16,14 @@ interface BookingSendModalProps {
 export function BookingSendModal({ isOpen, onClose }: BookingSendModalProps) {
   const { state, createOrder } = useDandeli();
   const [category, setCategory] = useState<'DOKUMEN' | 'PAKET_KECIL' | 'PAKET_SEDANG'>('PAKET_KECIL');
-  const [description, setDescription] = useState('Baju dan aksesoris paket');
+  const [description, setDescription] = useState('Baju dan oleh-oleh khas Tegal');
   const [weightKg, setWeightKg] = useState(2);
   const [senderName, setSenderName] = useState(state.user.name);
   const [senderPhone, setSenderPhone] = useState(state.user.phone);
-  const [recipientName, setRecipientName] = useState('Siti Rahmawati');
+  const [recipientName, setRecipientName] = useState('Siti Rahmawati (Balapulang)');
   const [recipientPhone, setRecipientPhone] = useState('0813-7744-1122');
-  const [pickup, setPickup] = useState<LocationPoint>(JAKARTA_LOCATIONS[0]);
-  const [destination, setDestination] = useState<LocationPoint>(JAKARTA_LOCATIONS[3]);
+  const [pickup, setPickup] = useState<LocationPoint>(TEGAL_LOCATIONS[0]); // Danawarih
+  const [destination, setDestination] = useState<LocationPoint>(TEGAL_LOCATIONS[2]); // Pasar Balapulang
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('DANDELI_WALLET');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -223,12 +223,12 @@ export function BookingSendModal({ isOpen, onClose }: BookingSendModalProps) {
               <select
                 value={pickup.name}
                 onChange={(e) => {
-                  const loc = JAKARTA_LOCATIONS.find((l) => l.name === e.target.value);
+                  const loc = TEGAL_LOCATIONS.find((l) => l.name === e.target.value);
                   if (loc) setPickup(loc);
                 }}
                 className="w-full text-xs font-semibold p-2.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white"
               >
-                {JAKARTA_LOCATIONS.map((loc) => (
+                {TEGAL_LOCATIONS.map((loc) => (
                   <option key={loc.name} value={loc.name}>
                     {loc.name}
                   </option>
@@ -243,12 +243,12 @@ export function BookingSendModal({ isOpen, onClose }: BookingSendModalProps) {
               <select
                 value={destination.name}
                 onChange={(e) => {
-                  const loc = JAKARTA_LOCATIONS.find((l) => l.name === e.target.value);
+                  const loc = TEGAL_LOCATIONS.find((l) => l.name === e.target.value);
                   if (loc) setDestination(loc);
                 }}
                 className="w-full text-xs font-semibold p-2.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white"
               >
-                {JAKARTA_LOCATIONS.map((loc) => (
+                {TEGAL_LOCATIONS.map((loc) => (
                   <option key={loc.name} value={loc.name}>
                     {loc.name}
                   </option>

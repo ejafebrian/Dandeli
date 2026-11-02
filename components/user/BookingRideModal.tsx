@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { LocationPoint, PaymentMethod, ServiceType } from '@/lib/types';
 import { useDandeli } from '@/lib/DandeliContext';
-import { JAKARTA_LOCATIONS } from '@/lib/data';
+import { TEGAL_LOCATIONS } from '@/lib/data';
 import { calculateDistanceKm, calculateDurationMins, formatRupiah } from '@/lib/store';
 import { InteractiveMap } from '@/components/common/InteractiveMap';
 import {
@@ -36,10 +36,10 @@ export function BookingRideModal({
 }: BookingRideModalProps) {
   const { state, createOrder } = useDandeli();
   const [serviceType] = useState<ServiceType>('RIDE_MOTOR');
-  const [pickup, setPickup] = useState<LocationPoint>(JAKARTA_LOCATIONS[0]);
-  const [destination, setDestination] = useState<LocationPoint>(JAKARTA_LOCATIONS[2]);
+  const [pickup, setPickup] = useState<LocationPoint>(TEGAL_LOCATIONS[0]); // Kantor Pusat DANDELI (Danawarih)
+  const [destination, setDestination] = useState<LocationPoint>(TEGAL_LOCATIONS[4]); // Alun-alun Slawi
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('DANDELI_WALLET');
-  const [voucherCode, setVoucherCode] = useState<string>('DANDELIBARU');
+  const [voucherCode, setVoucherCode] = useState<string>('DANDELITEGAL');
   const [isBooking, setIsBooking] = useState(false);
 
   // Map point selection mode: null, 'PICKUP', or 'DESTINATION'
@@ -111,7 +111,7 @@ export function BookingRideModal({
             </div>
             <div>
               <h2 className="text-base font-bold text-slate-900 dark:text-white">Pesan DANDELI Ride Motor</h2>
-              <p className="text-xs text-slate-500">Antar jemput cepat, bebas macet, & asuransi resmi</p>
+              <p className="text-xs text-slate-500">Kabupaten & Kota Tegal · Berpusat di Danawarih Balapulang</p>
             </div>
           </div>
           <button
@@ -213,16 +213,16 @@ export function BookingRideModal({
               <select
                 value={pickup.name}
                 onChange={(e) => {
-                  const loc = JAKARTA_LOCATIONS.find((l) => l.name === e.target.value);
+                  const loc = TEGAL_LOCATIONS.find((l) => l.name === e.target.value);
                   if (loc) setPickup(loc);
                 }}
                 className="w-full text-xs font-semibold p-2.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
               >
                 {/* Current custom point option if created from map */}
-                {!JAKARTA_LOCATIONS.some((l) => l.name === pickup.name) && (
+                {!TEGAL_LOCATIONS.some((l) => l.name === pickup.name) && (
                   <option value={pickup.name}>📍 {pickup.name}</option>
                 )}
-                {JAKARTA_LOCATIONS.map((loc) => (
+                {TEGAL_LOCATIONS.map((loc) => (
                   <option key={loc.name} value={loc.name}>
                     {loc.name}
                   </option>
@@ -260,15 +260,15 @@ export function BookingRideModal({
               <select
                 value={destination.name}
                 onChange={(e) => {
-                  const loc = JAKARTA_LOCATIONS.find((l) => l.name === e.target.value);
+                  const loc = TEGAL_LOCATIONS.find((l) => l.name === e.target.value);
                   if (loc) setDestination(loc);
                 }}
                 className="w-full text-xs font-semibold p-2.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
               >
-                {!JAKARTA_LOCATIONS.some((l) => l.name === destination.name) && (
+                {!TEGAL_LOCATIONS.some((l) => l.name === destination.name) && (
                   <option value={destination.name}>📍 {destination.name}</option>
                 )}
-                {JAKARTA_LOCATIONS.map((loc) => (
+                {TEGAL_LOCATIONS.map((loc) => (
                   <option key={loc.name} value={loc.name}>
                     {loc.name}
                   </option>

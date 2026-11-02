@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { useDandeli } from '@/lib/DandeliContext';
 import { Merchant, MenuItem, OrderItem, PaymentMethod } from '@/lib/types';
 import { formatRupiah, calculateDistanceKm } from '@/lib/store';
-import { JAKARTA_LOCATIONS } from '@/lib/data';
+import { TEGAL_LOCATIONS } from '@/lib/data';
 import { Utensils, Star, Clock, Plus, Minus, ShoppingBag, X, ChevronRight, Check } from 'lucide-react';
 import Image from 'next/image';
 import confetti from 'canvas-confetti';
@@ -24,7 +24,7 @@ export function BookingFoodModal({ isOpen, onClose }: BookingFoodModalProps) {
 
   if (!isOpen) return null;
 
-  const userLocation = JAKARTA_LOCATIONS[0]; // Grand Indonesia as default user spot
+  const userLocation = TEGAL_LOCATIONS[0]; // Danawarih Balapulang as default user spot
   const deliveryDistanceKm = calculateDistanceKm(
     selectedMerchant.lat,
     selectedMerchant.lng,

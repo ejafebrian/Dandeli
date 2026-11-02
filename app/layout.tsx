@@ -17,16 +17,16 @@ const jetbrainsMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: 'DANDELI - Ekosistem Transportasi & Layanan Digital',
-  description: 'Mudah Bergerak, Mudah Mengantar. Platform transportasi online, pesan makanan, dan ekspedisi kurir terintegrasi untuk Pengguna, Driver, dan Admin.',
+  description: 'Ekosistem transportasi online, pesan makanan khas lokal, dan kurir digital khusus Kabupaten & Kota Tegal, berpusat di Desa Danawarih, Balapulang.',
   openGraph: {
     title: 'DANDELI - Ekosistem Transportasi & Layanan Digital',
-    description: 'Mudah Bergerak, Mudah Mengantar. Platform transportasi online, pesan makanan, dan ekspedisi kurir terintegrasi.',
+    description: 'Ekosistem transportasi online, pesan makanan khas lokal, dan kurir digital khusus Kabupaten & Kota Tegal, berpusat di Desa Danawarih, Balapulang.',
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
     title: 'DANDELI - Ekosistem Transportasi & Layanan Digital',
-    description: 'Mudah Bergerak, Mudah Mengantar. Platform transportasi online, pesan makanan, dan ekspedisi kurir terintegrasi.',
+    description: 'Ekosistem transportasi online, pesan makanan khas lokal, dan kurir digital khusus Kabupaten & Kota Tegal, berpusat di Desa Danawarih, Balapulang.',
   },
 };
 

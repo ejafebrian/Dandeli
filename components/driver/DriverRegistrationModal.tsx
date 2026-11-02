@@ -19,11 +19,11 @@ export function DriverRegistrationModal({
   const [name, setName] = useState('Rudi Hartono');
   const [phone, setPhone] = useState('0813-5566-7788');
   const [vehicleType] = useState<'MOTOR'>('MOTOR');
-  const [vehiclePlate, setVehiclePlate] = useState('B 5590 ABC');
+  const [vehiclePlate, setVehiclePlate] = useState('G 5590 BZ');
   const [vehicleModel, setVehicleModel] = useState('Honda PCX 160');
-  const [ktpNumber, setKtpNumber] = useState('3171098234780001');
+  const [ktpNumber, setKtpNumber] = useState('3328098234780001');
   const [simNumber, setSimNumber] = useState('981273645012');
-  const [stnkNumber, setStnkNumber] = useState('STNK-8821-B5590ABC');
+  const [stnkNumber, setStnkNumber] = useState('STNK-8821-G5590BZ');
   const [bankName, setBankName] = useState('Bank Central Asia (BCA)');
   const [accountNumber, setAccountNumber] = useState('5420192837');
   const [submitted, setSubmitted] = useState(false);
@@ -74,7 +74,7 @@ export function DriverRegistrationModal({
             <h3 className="text-base font-bold text-slate-900 dark:text-white">
               Pendaftaran Mitra Pengemudi DANDELI Motor
             </h3>
-            <p className="text-xs text-slate-500">Bergabung sebagai mitra rider dan raih pendapatan fleksibel</p>
+            <p className="text-xs text-slate-500">Khusus Operasional Kab. & Kota Tegal (Pusat: Danawarih Balapulang)</p>
           </div>
           <button
             onClick={onClose}

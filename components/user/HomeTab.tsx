@@ -5,7 +5,7 @@ import { useDandeli } from '@/lib/DandeliContext';
 import { formatRupiah } from '@/lib/store';
 import { DandeliLogo } from '@/components/common/DandeliLogo';
 import { InteractiveMap } from '@/components/common/InteractiveMap';
-import { JAKARTA_LOCATIONS } from '@/lib/data';
+import { TEGAL_LOCATIONS } from '@/lib/data';
 import { ServiceType } from '@/lib/types';
 import {
   Bike,
@@ -47,10 +47,11 @@ export function HomeTab({
   const onlineDrivers = state.drivers.filter((d) => d.status === 'ONLINE_IDLE');
 
   const filteredLocations = searchQuery
-    ? JAKARTA_LOCATIONS.filter((l) =>
-        l.name.toLowerCase().includes(searchQuery.toLowerCase())
+    ? TEGAL_LOCATIONS.filter((l) =>
+        l.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        l.address.toLowerCase().includes(searchQuery.toLowerCase())
       )
-    : JAKARTA_LOCATIONS.slice(0, 3);
+    : TEGAL_LOCATIONS.slice(0, 4);
 
   return (
     <div className="space-y-4 pb-6">
@@ -185,16 +186,16 @@ export function HomeTab({
           <div className="flex items-center gap-1.5">
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
             <h3 className="text-xs font-bold text-slate-800 dark:text-white uppercase tracking-wider">
-              Armada Motor Sekitar Anda (Google Maps)
+              Armada Motor Tegal Sekitar Anda (Google Maps)
             </h3>
           </div>
           <span className="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold">
-            {onlineDrivers.length} Mitra Motor Online
+            {onlineDrivers.length} Mitra Motor Plat G Online
           </span>
         </div>
 
         <InteractiveMap
-          pickupLocation={JAKARTA_LOCATIONS[0]}
+          pickupLocation={TEGAL_LOCATIONS[0]}
           nearbyDrivers={state.drivers.map((d) => ({
             id: d.id,
             lat: d.currentLocation.lat,
@@ -212,7 +213,7 @@ export function HomeTab({
           <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" />
           <input
             type="text"
-            placeholder="Mau ke mana hari ini? Cari lokasi atau mall..."
+            placeholder="Mau ke mana wong Tegal? Danawarih, Balapulang, Slawi..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full pl-10 pr-4 py-3 text-xs rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white shadow-xs focus:outline-none focus:ring-2 focus:ring-emerald-500"
@@ -248,10 +249,10 @@ export function HomeTab({
       <div className="p-4 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-700 text-white flex items-center justify-between shadow-md">
         <div>
           <span className="text-[10px] font-bold tracking-wider uppercase bg-white/20 px-2 py-0.5 rounded-md text-emerald-100">
-            PROMO KHUSUS HARI INI
+            PROMO KHUSUS WONG TEGAL
           </span>
           <h4 className="text-sm font-black mt-1">Diskon 50% DANDELI Ride Motor</h4>
-          <p className="text-xs text-emerald-100 mt-0.5">Gunakan kode voucher: <strong>DANDELIBARU</strong></p>
+          <p className="text-xs text-emerald-100 mt-0.5">Gunakan kode voucher: <strong>DANDELITEGAL</strong></p>
         </div>
         <button
           onClick={() => onOpenRide('RIDE_MOTOR')}

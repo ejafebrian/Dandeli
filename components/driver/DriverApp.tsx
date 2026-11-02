@@ -206,8 +206,8 @@ export function DriverApp() {
             {/* New Driver Register Banner Shortcut */}
             <div className="p-3.5 rounded-2xl bg-slate-900 border border-slate-800 flex items-center justify-between text-xs">
               <div>
-                <h4 className="font-bold text-white">Ingin Jadi Mitra Baru?</h4>
-                <p className="text-[11px] text-slate-400">Daftarkan motor atau mobil Anda</p>
+                <h4 className="font-bold text-white">Ingin Jadi Mitra DANDELI Tegal?</h4>
+                <p className="text-[11px] text-slate-400">Daftarkan motor Anda (Plat G Kab./Kota Tegal)</p>
               </div>
               <button
                 onClick={() => setRegisterModalOpen(true)}

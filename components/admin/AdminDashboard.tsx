@@ -266,7 +266,7 @@ export function AdminDashboard() {
                   <div className="flex items-center justify-between">
                     <div>
                       <h3 className="text-sm font-bold text-slate-900 dark:text-white">
-                        Live Driver Radar · DKI Jakarta
+                        Live Driver Radar · Kab. & Kota Tegal (Pusat: Danawarih Balapulang)
                       </h3>
                       <p className="text-xs text-slate-500">
                         Monitoring pergerakan armada Ride & Kurir real-time
